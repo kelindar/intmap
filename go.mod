@@ -1,4 +1,4 @@
-module github.com/brentp/intintmap
+module github.com/kelindar/intmap
 
 go 1.17
 

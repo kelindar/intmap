@@ -1,3 +1,6 @@
+// Copyright (c) 2021, Roman Atachiants
+// Copyright (c) 2016, Brent Pedersen - Bioinformatics
+
 package intmap
 
 import (
