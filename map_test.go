@@ -16,6 +16,7 @@ import (
 func BenchmarkStore(b *testing.B) {
 	const count = 1000000
 	our := New(count, .90)
+	syn := NewSync(count, .90)
 	std := make(map[uint32]uint32, count)
 
 	b.Run("intmap", func(b *testing.B) {
@@ -23,6 +24,14 @@ func BenchmarkStore(b *testing.B) {
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			our.Store(xxrand.Uint32n(count), 1)
+		}
+	})
+
+	b.Run("sync", func(b *testing.B) {
+		b.ReportAllocs()
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			syn.Store(xxrand.Uint32n(count), 1)
 		}
 	})
 
@@ -38,6 +47,7 @@ func BenchmarkStore(b *testing.B) {
 func BenchmarkLoad(b *testing.B) {
 	const count = 1000000
 	our := sequentialMap(count)
+	syn := sequentialSyncMap(count)
 	std := make(map[uint32]uint32, count)
 	for i := uint32(0); i < count; i++ {
 		std[i] = i
@@ -52,6 +62,16 @@ func BenchmarkLoad(b *testing.B) {
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
 				our.Load(xxrand.Uint32n(count) + shift)
+			}
+		})
+
+		b.Run(fmt.Sprintf("sync-%v%%", rate), func(b *testing.B) {
+			shift := uint32(count - count*rate/100)
+
+			b.ReportAllocs()
+			b.ResetTimer()
+			for i := 0; i < b.N; i++ {
+				syn.Load(xxrand.Uint32n(count) + shift)
 			}
 		})
 
@@ -320,6 +340,15 @@ func randomMap(size int) *Map {
 	m := New(size, 0.99)
 	for i := 0; i < size; i++ {
 		m.Store(xxrand.Uint32(), uint32(i))
+	}
+	return m
+}
+
+// sequentialSyncMap creates a new map with sequential keys
+func sequentialSyncMap(size int) *Sync {
+	m := NewSync(size, 0.99)
+	for i := 0; i < size; i++ {
+		m.Store(uint32(i), uint32(i))
 	}
 	return m
 }

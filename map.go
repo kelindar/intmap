@@ -205,13 +205,15 @@ func (m *Map) shiftKeys(pos uint32) {
 	}
 }
 
+// rehash rehashes the key space and resizes the map
 func (m *Map) rehash() {
 	newCapacity := len(m.data) * 2
 	m.threshold = int(math.Floor(float64(newCapacity/2) * m.fillFactor))
 	m.mask = uint32(newCapacity/2 - 1)
 	m.mask2 = uint32(newCapacity - 1)
 
-	data := make([]uint32, len(m.data)) // copy of original data
+	// copy of original data
+	data := make([]uint32, len(m.data))
 	copy(data, m.data)
 
 	m.data = make([]uint32, newCapacity)
@@ -229,6 +231,8 @@ func (m *Map) rehash() {
 		}
 	}
 }
+
+// bucketOf calcultes the hash bucket for the integer key
 func bucketOf(key, mask uint32) uint32 {
 	h := key*0xdeece66d + 0xb
 	return (h & mask) << 1

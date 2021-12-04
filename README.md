@@ -37,16 +37,22 @@ Looking at the benchmarks agains the standard Go map, this map should perform ro
 
 ```
 cpu: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
-BenchmarkStore/intmap-8                 14596622                83.30 ns/op            0 B/op          0 allocs/op
-BenchmarkStore/stdmap-8                 10043176               116.1 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-0%-8               10720995               108.1 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-0%-8               10443445               110.4 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-10%-8              10510770               105.3 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-10%-8              10319277               109.3 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-50%-8              12594564                89.33 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-50%-8              10215164               112.6 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-90%-8              19359448                64.39 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-90%-8              10160139               111.7 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-100%-8             20707099                62.17 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-100%-8              9713601               110.4 ns/op             0 B/op          0 allocs/op
+BenchmarkStore/intmap-8                 14422464                81.09 ns/op            0 B/op          0 allocs/op
+BenchmarkStore/sync-8                   10812642                93.62 ns/op            0 B/op          0 allocs/op
+BenchmarkStore/stdmap-8                 10179489               114.8 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/intmap-0%-8               10622955               108.6 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/sync-0%-8                  9956158               115.7 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/stdmap-0%-8               10334260               108.4 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/intmap-10%-8              10721809               105.1 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/sync-10%-8                 9463400               111.8 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/stdmap-10%-8              10433720               110.7 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/intmap-50%-8              12272485                88.29 ns/op            0 B/op          0 allocs/op
+BenchmarkLoad/sync-50%-8                11352820                91.41 ns/op            0 B/op          0 allocs/op
+BenchmarkLoad/stdmap-50%-8              10265517               111.1 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/intmap-90%-8              15370150                66.75 ns/op            0 B/op          0 allocs/op
+BenchmarkLoad/sync-90%-8                17687307                69.72 ns/op            0 B/op          0 allocs/op
+BenchmarkLoad/stdmap-90%-8              10236068               112.2 ns/op             0 B/op          0 allocs/op
+BenchmarkLoad/intmap-100%-8             20562958                58.48 ns/op            0 B/op          0 allocs/op
+BenchmarkLoad/sync-100%-8               18913777                62.92 ns/op            0 B/op          0 allocs/op
+BenchmarkLoad/stdmap-100%-8              9638715               109.7 ns/op             0 B/op          0 allocs/op
 ```
