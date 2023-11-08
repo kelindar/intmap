@@ -1,4 +1,4 @@
-// Copyright (c) 2021, Roman Atachiants
+// Copyright (c) 2021-2023, Roman Atachiants
 // Copyright (c) 2016, Brent Pedersen - Bioinformatics
 
 package intmap
@@ -171,6 +171,18 @@ func (m *Map) Range(f func(key, value uint32) bool) {
 			}
 		}
 	}
+}
+
+// Clone returns a copy of the map.
+func (m *Map) Clone() *Map {
+	clone := New(len(m.data)/2, m.fillFactor)
+	clone.count = m.count
+	clone.mask = m.mask
+	clone.mask2 = m.mask2
+	clone.hasFreeKey = m.hasFreeKey
+	clone.freeVal = m.freeVal
+	copy(clone.data, m.data)
+	return clone
 }
 
 // shiftKeys shifts entries with the same hash.

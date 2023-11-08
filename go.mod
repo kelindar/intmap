@@ -1,6 +1,6 @@
 module github.com/kelindar/intmap
 
-go 1.17
+go 1.20
 
 require (
 	github.com/kelindar/xxrand v1.0.1

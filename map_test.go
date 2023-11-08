@@ -1,4 +1,4 @@
-// Copyright (c) 2021, Roman Atachiants
+// Copyright (c) 2021-2023, Roman Atachiants
 // Copyright (c) 2016, Brent Pedersen - Bioinformatics
 
 package intmap
@@ -13,6 +13,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+/*
+cpu: 13th Gen Intel(R) Core(TM) i7-13700K
+BenchmarkStore/intmap-24         	18568460	        61.14 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/sync-24           	16417874	        71.24 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/stdmap-24         	14243356	        73.32 ns/op	       0 B/op	       0 allocs/op
+*/
 func BenchmarkStore(b *testing.B) {
 	const count = 1000000
 	our := New(count, .90)
@@ -44,6 +50,24 @@ func BenchmarkStore(b *testing.B) {
 	})
 }
 
+/*
+cpu: 13th Gen Intel(R) Core(TM) i7-13700K
+BenchmarkLoad/intmap-0%-24         	13987644	        83.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-0%-24           	13353600	        88.65 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0%-24         	16724271	        66.74 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-10%-24        	14666626	        79.40 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-10%-24          	14067055	        84.99 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-10%-24        	17432941	        65.00 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-50%-24        	18002366	        66.59 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-50%-24          	16336176	        71.54 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-50%-24        	16711392	        66.24 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-90%-24        	23374497	        47.08 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-90%-24          	20600468	        51.61 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-90%-24        	17858258	        65.73 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-100%-24       	26168407	        45.27 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-100%-24         	20380226	        49.47 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-100%-24       	16759916	        66.16 ns/op	       0 B/op	       0 allocs/op
+*/
 func BenchmarkLoad(b *testing.B) {
 	const count = 1000000
 	our := sequentialMap(count)
@@ -351,4 +375,33 @@ func sequentialSyncMap(size int) *Sync {
 		m.Store(uint32(i), uint32(i))
 	}
 	return m
+}
+
+func TestMapClone(t *testing.T) {
+	original := New(10, 0.6)
+	original.Store(1, 10)
+	original.Store(2, 20)
+	original.Store(3, 30)
+
+	clone := original.Clone()
+
+	// Check that the clone is not the same object as the original
+	assert.NotEqual(t, clone, original, "clone and original are the same object")
+
+	// Check that the clone has the same count
+	assert.Equal(t, original.Count(), clone.Count(), "clone count does not match original count")
+
+	// Check that the clone has the same data
+	for i := uint32(1); i <= 3; i++ {
+		v1, ok1 := original.Load(i)
+		v2, ok2 := clone.Load(i)
+		assert.True(t, ok1, "original does not have key %d", i)
+		assert.True(t, ok2, "clone does not have key %d", i)
+		assert.Equal(t, v1, v2, "clone does not have the same data as the original")
+	}
+
+	// Check that modifying the clone does not modify the original
+	clone.Store(4, 40)
+	_, ok := original.Load(4)
+	assert.False(t, ok, "modifying clone modified the original")
 }

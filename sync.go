@@ -1,4 +1,4 @@
-// Copyright (c) 2021, Roman Atachiants
+// Copyright (c) 2021-2023, Roman Atachiants
 
 package intmap
 
