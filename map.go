@@ -12,14 +12,13 @@ const isFree = 0
 
 // Map is a map-like data-structure for int64s
 type Map struct {
-	data       []uint32 // Keys and values, interleaved keys
-	fillFactor float64  // Desired fill factor
-	threshold  int      // Threshold for resize
-	count      int      // Number of elements in the map
-	mask       uint32   // Mask to calculate the original bucket
-	mask2      uint32   // Mask for collisions
-	hasFreeKey bool     // Whether 'free' key exists
-	freeVal    uint32   // Value of 'free' key
+	data       []uint32  // Keys and values, interleaved keys
+	fillFactor float32   // Desired fill factor
+	threshold  int32     // Threshold for resize
+	count      int32     // Number of elements in the map
+	mask       [2]uint32 // Mask to calculate the original bucket and collisions
+	freeVal    uint32    // Value of 'free' key
+	hasFreeKey bool      // Whether 'free' key exists
 }
 
 // New returns a map initialized with n spaces and uses the stated fillFactor.
@@ -35,10 +34,9 @@ func New(size int, fillFactor float64) *Map {
 	capacity := arraySize(size, fillFactor)
 	return &Map{
 		data:       make([]uint32, 2*capacity),
-		fillFactor: fillFactor,
-		threshold:  int(math.Floor(float64(capacity) * fillFactor)),
-		mask:       uint32(capacity - 1),
-		mask2:      uint32(2*capacity - 1),
+		fillFactor: float32(fillFactor),
+		threshold:  int32(math.Floor(float64(capacity) * fillFactor)),
+		mask:       [2]uint32{uint32(capacity - 1), uint32(2*capacity - 1)},
 	}
 }
 
@@ -52,7 +50,7 @@ func (m *Map) Load(key uint32) (uint32, bool) {
 		return 0, false
 	}
 
-	ptr := bucketOf(key, m.mask)
+	ptr := bucketOf(key, m.mask[0])
 	if ptr < 0 || ptr >= uint32(len(m.data)) { // Check to help to compiler to eliminate a bounds check below.
 		return 0, false
 	}
@@ -64,7 +62,7 @@ func (m *Map) Load(key uint32) (uint32, bool) {
 		return m.data[ptr+1], true
 	default:
 		for {
-			ptr = (ptr + 2) & m.mask2
+			ptr = (ptr + 2) & m.mask[1]
 			switch m.data[ptr] {
 			case isFree:
 				return 0, false
@@ -86,7 +84,7 @@ func (m *Map) Store(key, val uint32) {
 		return
 	}
 
-	ptr := bucketOf(key, m.mask)
+	ptr := bucketOf(key, m.mask[0])
 	switch m.data[ptr] {
 	case isFree: // end of chain already
 		m.data[ptr] = key
@@ -102,7 +100,7 @@ func (m *Map) Store(key, val uint32) {
 		return
 	default:
 		for {
-			ptr = (ptr + 2) & m.mask2
+			ptr = (ptr + 2) & m.mask[1]
 			switch m.data[ptr] {
 			case isFree:
 				m.data[ptr] = key
@@ -129,7 +127,7 @@ func (m *Map) Delete(key uint32) {
 		return
 	}
 
-	ptr := bucketOf(key, m.mask)
+	ptr := bucketOf(key, m.mask[0])
 	switch m.data[ptr] {
 	case isFree: // end of chain already
 		return
@@ -139,7 +137,7 @@ func (m *Map) Delete(key uint32) {
 		return
 	default:
 		for {
-			ptr = (ptr + 2) & m.mask2
+			ptr = (ptr + 2) & m.mask[1]
 			switch m.data[ptr] {
 			case isFree:
 				return
@@ -154,7 +152,7 @@ func (m *Map) Delete(key uint32) {
 
 // Count returns number of key/value pairs in the map.
 func (m *Map) Count() int {
-	return m.count
+	return int(m.count)
 }
 
 // Range calls f sequentially for each key and value present in the map. If f
@@ -175,10 +173,10 @@ func (m *Map) Range(f func(key, value uint32) bool) {
 
 // Clone returns a copy of the map.
 func (m *Map) Clone() *Map {
-	clone := New(len(m.data)/2, m.fillFactor)
+	clone := New(len(m.data)/2, float64(m.fillFactor))
 	clone.count = m.count
-	clone.mask = m.mask
-	clone.mask2 = m.mask2
+	clone.mask[0] = m.mask[0]
+	clone.mask[1] = m.mask[1]
 	clone.hasFreeKey = m.hasFreeKey
 	clone.freeVal = m.freeVal
 	copy(clone.data, m.data)
@@ -192,7 +190,7 @@ func (m *Map) shiftKeys(pos uint32) {
 	var data = m.data
 	for {
 		last = pos
-		pos = (last + 2) & m.mask2
+		pos = (last + 2) & m.mask[1]
 		for {
 			k = data[pos]
 			if k == isFree {
@@ -200,7 +198,7 @@ func (m *Map) shiftKeys(pos uint32) {
 				return
 			}
 
-			slot = bucketOf(k, m.mask)
+			slot = bucketOf(k, m.mask[0])
 			if last <= pos {
 				if last >= slot || slot > pos {
 					break
@@ -210,7 +208,7 @@ func (m *Map) shiftKeys(pos uint32) {
 					break
 				}
 			}
-			pos = (pos + 2) & m.mask2
+			pos = (pos + 2) & m.mask[1]
 		}
 		data[last] = k
 		data[last+1] = data[pos+1]
@@ -220,9 +218,8 @@ func (m *Map) shiftKeys(pos uint32) {
 // rehash rehashes the key space and resizes the map
 func (m *Map) rehash() {
 	newCapacity := len(m.data) * 2
-	m.threshold = int(math.Floor(float64(newCapacity/2) * m.fillFactor))
-	m.mask = uint32(newCapacity/2 - 1)
-	m.mask2 = uint32(newCapacity - 1)
+	m.threshold = int32(math.Floor(float64(newCapacity/2) * float64(m.fillFactor)))
+	m.mask = [2]uint32{uint32(newCapacity/2 - 1), uint32(newCapacity - 1)}
 
 	// copy of original data
 	data := make([]uint32, len(m.data))
