@@ -155,20 +155,52 @@ func (m *Map) Count() int {
 	return int(m.count)
 }
 
-// Range calls f sequentially for each key and value present in the map. If f
+// Range calls f sequentially for each key and value present in the map. If fn
 // returns false, range stops the iteration.
-func (m *Map) Range(f func(key, value uint32) bool) {
-	if m.hasFreeKey && !f(isFree, m.freeVal) {
+func (m *Map) Range(fn func(key, value uint32) bool) {
+	if m.hasFreeKey && !fn(isFree, m.freeVal) {
 		return
 	}
 
 	for i := 0; i < len(m.data); i += 2 {
 		if k := m.data[i]; k != isFree {
-			if !f(k, m.data[i+1]) {
+			if !fn(k, m.data[i+1]) {
 				return
 			}
 		}
 	}
+}
+
+// RangeEach calls f sequentially for each key and value present in the map.
+func (m *Map) RangeEach(fn func(key, value uint32)) {
+	if m.hasFreeKey {
+		fn(isFree, m.freeVal)
+	}
+
+	for i := 0; i < len(m.data); i += 2 {
+		if k := m.data[i]; k != isFree {
+			fn(k, m.data[i+1])
+		}
+	}
+}
+
+// RangeErr calls f sequentially for each key and value present in the map. If fn
+// returns error, range stops the iteration.
+func (m *Map) RangeErr(fn func(key, value uint32) error) error {
+	if m.hasFreeKey {
+		if err := fn(isFree, m.freeVal); err != nil {
+			return err
+		}
+	}
+
+	for i := 0; i < len(m.data); i += 2 {
+		if k := m.data[i]; k != isFree {
+			if err := fn(k, m.data[i+1]); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // Clone returns a copy of the map.

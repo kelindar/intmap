@@ -405,3 +405,89 @@ func TestMapClone(t *testing.T) {
 	_, ok := original.Load(4)
 	assert.False(t, ok, "modifying clone modified the original")
 }
+func TestRangeEach(t *testing.T) {
+	m := New(10, 0.6)
+	m.Store(isFree, 10)
+	m.Store(2, 20)
+	m.Store(3, 30)
+	m.Store(4, 40)
+	m.Store(5, 50)
+
+	keys, values := []uint32{}, []uint32{}
+	m.RangeEach(func(key, value uint32) {
+		keys = append(keys, key)
+		values = append(values, value)
+	})
+
+	assert.ElementsMatch(t, []uint32{0, 2, 3, 4, 5}, keys)
+	assert.ElementsMatch(t, []uint32{10, 20, 30, 40, 50}, values)
+}
+
+func TestRangeErr(t *testing.T) {
+	m := New(10, 0.6)
+	m.Store(1, 10)
+	m.Store(2, 20)
+	m.Store(3, 30)
+	m.Store(4, 40)
+	m.Store(5, 50)
+
+	keys, values := []uint32{}, []uint32{}
+	assert.NoError(t, m.RangeErr(func(key, value uint32) error {
+		keys = append(keys, key)
+		values = append(values, value)
+		return nil
+	}))
+
+	assert.ElementsMatch(t, []uint32{1, 2, 3, 4, 5}, keys)
+	assert.ElementsMatch(t, []uint32{10, 20, 30, 40, 50}, values)
+}
+
+func TestRangeErrStop(t *testing.T) {
+	m := New(10, 0.6)
+	m.Store(1, 10)
+	m.Store(2, 20)
+	m.Store(3, 30)
+	m.Store(4, 40)
+	m.Store(5, 50)
+
+	keys, values := []uint32{}, []uint32{}
+	assert.EqualError(t, m.RangeErr(func(key, value uint32) error {
+		keys = append(keys, key)
+		values = append(values, value)
+		return fmt.Errorf("stop")
+	}), "stop")
+
+	assert.Len(t, keys, 1)
+	assert.Len(t, values, 1)
+}
+
+func TestRangeErrFreeKey(t *testing.T) {
+	m := New(10, 0.6)
+	m.Store(isFree, 10)
+
+	keys, values := []uint32{}, []uint32{}
+	assert.NoError(t, m.RangeErr(func(key, value uint32) error {
+		keys = append(keys, key)
+		values = append(values, value)
+		return nil
+	}))
+
+	assert.Len(t, keys, 1)
+	assert.Len(t, values, 1)
+}
+
+func TestRangeStop(t *testing.T) {
+	m := New(10, 0.6)
+	m.Store(0, 0)
+	m.Store(1, 10)
+
+	keys, values := []uint32{}, []uint32{}
+	m.Range(func(key, value uint32) bool {
+		keys = append(keys, key)
+		values = append(values, value)
+		return false
+	})
+
+	assert.Len(t, keys, 1)
+	assert.Len(t, values, 1)
+}
