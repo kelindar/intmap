@@ -215,6 +215,14 @@ func (m *Map) Clone() *Map {
 	return clone
 }
 
+// Clear removes all entries from the map.
+func (m *Map) Clear() {
+	clear(m.data)
+	m.count = 0
+	m.hasFreeKey = false
+	m.freeVal = 0
+}
+
 // shiftKeys shifts entries with the same hash.
 func (m *Map) shiftKeys(pos uint32) {
 	var last, slot uint32
