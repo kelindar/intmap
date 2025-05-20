@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Roman Atachiants
+// Copyright (c) 2021-2025, Roman Atachiants
 // Copyright (c) 2016, Brent Pedersen - Bioinformatics
 
 package intmap
@@ -54,9 +54,14 @@ func newMap(size int, fillFactor float64) *Map {
 //go:nosplit
 //go:inline
 func bucketOf(key, mask uint32) uint32 {
-	const phi32 = 0x9E3779B9         // 2^32 / golden-ratio
-	return (key * phi32) & mask << 1 // 1 MUL, no XOR
+	h := key*0x01000193 ^ 0x811c9dc5
+	return (h & mask) << 1
 }
+
+/*func bucketOf(key, mask uint32) uint32 {
+	const phi32 = 0x9E3779B9           // 2^32 / golden-ratio
+	return ((key * phi32) & mask) << 1 // 1 MUL, no XOR
+}*/
 
 // Capacity returns the maximum number of entries before resize.
 func (m *Map) Capacity() int { return len(m.data) / 2 }
