@@ -133,17 +133,15 @@ func TestMapSimple(t *testing.T) {
 		m.Store(i, i)
 	}
 	for i = 0; i < 20000; i += 2 {
-		if v, ok = m.Load(i); !ok || v != i {
-			t.Errorf("didn't get expected value")
-		}
+		v, ok = m.Load(i)
+		assert.True(t, ok, "expected key %d to be present", i)
+		assert.Equal(t, i, v, "expected value for key %d to be %d, got %d", i, i, v)
 		if _, ok = m.Load(i + 1); ok {
-			t.Errorf("didn't get expected 'not found' flag")
+			assert.False(t, ok, "expected key %d to be absent", i+1)
 		}
 	}
 
-	if m.Count() != int(20000/2) {
-		t.Errorf("size (%d) is not right, should be %d", m.Count(), int(20000/2))
-	}
+	assert.Equal(t, int(20000/2), m.Count(), "size is not right, should be %d", int(20000/2))
 	// --------------------------------------------------------------------
 	// Del()
 
@@ -151,11 +149,10 @@ func TestMapSimple(t *testing.T) {
 		m.Delete(i)
 	}
 	for i = 0; i < 20000; i += 2 {
-		if _, ok = m.Load(i); ok {
-			t.Errorf("didn't get expected 'not found' flag")
-		}
+		_, ok = m.Load(i)
+		assert.False(t, ok, "expected key %d to be absent", i)
 		if _, ok = m.Load(i + 1); ok {
-			t.Errorf("didn't get expected 'not found' flag")
+			assert.False(t, ok, "expected key %d to be absent", i+1)
 		}
 	}
 
@@ -166,9 +163,9 @@ func TestMapSimple(t *testing.T) {
 		m.Store(i, i*2)
 	}
 	for i = 0; i < 20000; i += 2 {
-		if v, ok = m.Load(i); !ok || v != i*2 {
-			t.Errorf("didn't get expected value")
-		}
+		v, ok = m.Load(i)
+		assert.True(t, ok, "expected key %d to be present", i)
+		assert.Equal(t, i*2, v, "expected value for key %d to be %d, got %d", i, i*2, v)
 		if _, ok = m.Load(i + 1); ok {
 			t.Errorf("didn't get expected 'not found' flag")
 		}
@@ -208,15 +205,14 @@ func TestMap(t *testing.T) {
 			}
 
 			for j := i + 1; j < i+step; j++ {
-				if v, ok = m.Load(j); ok {
-					t.Errorf("expected 'not found' flag for %d, found %d", j, v)
-				}
+				v, ok = m.Load(j)
+				assert.False(t, ok, "expected key %d to be absent", j)
 			}
 		}
 
-		if v, ok = m.Load(0); !ok || v != 12345 {
-			t.Errorf("expected 12345 for key 0")
-		}
+		v, ok = m.Load(0)
+		assert.True(t, ok, "expected key 0 to be present")
+		assert.Equal(t, uint32(12345), v, "expected value for key 0 to be 12345, got %v", v)
 
 	}
 }

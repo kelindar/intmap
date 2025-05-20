@@ -1,5 +1,5 @@
 // Copyright (c) 2021-2025 Roman Atachiants
-// Robin-Hood open-addressing hash map for uint32→uint32 pairs.
+// Copyright (c) 2016, Brent Pedersen - Bioinformatics
 
 package intmap
 
@@ -36,11 +36,11 @@ func New(size int, fillFactor float64) *Map {
 	}
 }
 
-// bucketOf computes the **slot** index for the key (already doubled).
 //go:nosplit
 //go:inline
 func bucketOf(key, mask uint32) uint32 {
-	return ((key * 0x01000193) ^ 0x811c9dc5) & mask << 1
+	const phi32 = 0x9E3779B9         // 2^32 / golden-ratio
+	return (key * phi32) & mask << 1 // 1 MUL, no XOR
 }
 
 // Capacity returns the maximum number of entries before resize.
