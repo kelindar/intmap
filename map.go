@@ -283,7 +283,7 @@ func (m *Map) rehash() {
 
 // bucketOf calcultes the hash bucket for the integer key
 func bucketOf(key, mask uint32) uint32 {
-	h := key*0xdeece66d + 0xb
+	h := key*0x01000193 ^ 0x811c9dc5
 	return (h & mask) << 1
 }
 
