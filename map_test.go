@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2024, Roman Atachiants
+// Copyright (c) 2021-2025, Roman Atachiants
 // Copyright (c) 2016, Brent Pedersen - Bioinformatics
 
 package intmap
@@ -14,9 +14,9 @@ import (
 
 /*
 cpu: 13th Gen Intel(R) Core(TM) i7-13700K
-BenchmarkStore/intmap-24         	144682518	        8.203 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStore/sync-24           	47746893	        24.78 ns/op	       0 B/op	       0 allocs/op
-BenchmarkStore/stdmap-24         	65009140	        17.73 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/intmap-24         	122662514	         9.357 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/sync-24           	45237855	        26.67 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/stdmap-24         	58779109	        22.53 ns/op	       0 B/op	       0 allocs/op
 */
 func BenchmarkStore(b *testing.B) {
 	const count = 1000000
@@ -51,21 +51,21 @@ func BenchmarkStore(b *testing.B) {
 
 /*
 cpu: 13th Gen Intel(R) Core(TM) i7-13700K
-BenchmarkLoad/intmap-0%-24         	39415726	        29.97 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-0%-24           	35625010	        32.50 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-0%-24         	80052386	        15.30 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-10%-24        	39902106	        28.79 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-10%-24          	36058449	        31.43 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-10%-24        	70262704	        17.18 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-50%-24        	51586498	        22.18 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-50%-24          	43119246	        26.08 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-50%-24        	40672450	        24.68 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-90%-24        	134907433	         8.708 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-90%-24          	72522013	        14.41 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-90%-24        	67797170	        18.24 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-100%-24       	181198509	         6.383 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-100%-24         	88210225	        13.56 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-100%-24       	78086083	        17.20 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0%-24         	127656082	         9.635 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-0%-24           	81621494	        14.68 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0%-24         	74867529	        15.90 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-10%-24        	115486239	        10.39 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-10%-24          	65728573	        15.41 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-10%-24        	66042310	        17.77 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-50%-24        	78479074	        13.82 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-50%-24          	56725250	        18.06 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-50%-24        	47820351	        24.60 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-90%-24        	150305022	         7.976 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-90%-24          	85187844	        14.11 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-90%-24        	66479797	        21.41 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-100%-24       	173898772	         7.165 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-100%-24         	84534720	        14.25 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-100%-24       	67015261	        18.00 ns/op	       0 B/op	       0 allocs/op
 */
 func BenchmarkLoad(b *testing.B) {
 	const count = 1000000
