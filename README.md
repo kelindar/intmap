@@ -36,23 +36,23 @@ m.Delete(2)
 Looking at the benchmarks agains the standard Go map, this map should perform roughly 20-50% better depending on the conditions.
 
 ```
-cpu: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
-BenchmarkStore/intmap-8                 14422464                81.09 ns/op            0 B/op          0 allocs/op
-BenchmarkStore/sync-8                   10812642                93.62 ns/op            0 B/op          0 allocs/op
-BenchmarkStore/stdmap-8                 10179489               114.8 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-0%-8               10622955               108.6 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/sync-0%-8                  9956158               115.7 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-0%-8               10334260               108.4 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-10%-8              10721809               105.1 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/sync-10%-8                 9463400               111.8 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-10%-8              10433720               110.7 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-50%-8              12272485                88.29 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/sync-50%-8                11352820                91.41 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-50%-8              10265517               111.1 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-90%-8              15370150                66.75 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/sync-90%-8                17687307                69.72 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-90%-8              10236068               112.2 ns/op             0 B/op          0 allocs/op
-BenchmarkLoad/intmap-100%-8             20562958                58.48 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/sync-100%-8               18913777                62.92 ns/op            0 B/op          0 allocs/op
-BenchmarkLoad/stdmap-100%-8              9638715               109.7 ns/op             0 B/op          0 allocs/op
+cpu: 13th Gen Intel(R) Core(TM) i7-13700K
+BenchmarkStore/intmap-24         	144682518	        8.203 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/sync-24           	47746893	        24.78 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStore/stdmap-24         	65009140	        17.73 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0%-24         	40558078	        28.98 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-0%-24           	36516896	        31.53 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0%-24         	76847426	        15.57 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-10%-24        	40846196	        28.31 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-10%-24          	37622625	        31.21 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-10%-24        	69917145	        16.90 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-50%-24        	52405636	        21.62 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-50%-24          	44567251	        25.75 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-50%-24        	50478930	        23.68 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-90%-24        	140594277	        8.486 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-90%-24          	83630574	        14.40 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-90%-24        	69522844	        17.17 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-100%-24       	189147504	        6.271 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/sync-100%-24         	88044195	        13.58 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-100%-24       	78736231	        15.12 ns/op	       0 B/op	       0 allocs/op
 ```
