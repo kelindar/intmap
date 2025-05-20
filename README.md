@@ -16,7 +16,7 @@ This repository contains an implementation of `uint32-to-uint32` map which is **
 
 ```go
 // Create a new map with capacity of 1024 (resizeable) and 90% desired fill rate
-m := intmap.New(1024, 0.90)
+m := intmap.NewWithFill(1024, 0.90)
 
 // Store a few key/value pairs
 m.Store(1, 100)
