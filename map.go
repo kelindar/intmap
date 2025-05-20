@@ -250,6 +250,7 @@ func (m *Map) Clear() {
 // Clone returns a copy of the map.
 func (m *Map) Clone() *Map {
 	clone := New(len(m.data) / 2)
+	clone.threshold = m.threshold
 	clone.fillFactor = m.fillFactor
 	clone.count = m.count
 	clone.mask = m.mask
