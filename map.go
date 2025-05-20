@@ -288,29 +288,6 @@ func (m *Map) rehash() {
 	_ = oldCount // (could sanity-check here in debug build)
 }
 
-// arraySize returns the smallest power-of-two ≥ size / fill.
-// Panics if the result would overflow int.
-/*func arraySize(size int, fill float64) int {
-	if size <= 0 {
-		panic("intmap: size must be positive")
-	}
-	if fill <= 0 || fill >= 1 {
-		panic("intmap: fill factor must be in (0,1)")
-	}
-
-	need := uint64(math.Ceil(float64(size) / fill)) // exact ceiling
-	if need < 8 {
-		return 8
-	}
-	if need > uint64(^uint(0)) { // overflow check
-		panic("intmap: requested capacity overflows int")
-	}
-	// next power-of-two: 1 << (bits.Len64(need-1))
-	capacity := uint64(1) << (64 - bits.LeadingZeros64(need-1))
-	return int(capacity)
-}
-*/
-
 // arraySize returns the next power-of-two ≥ size/fill.
 func arraySize(size int, fill float64) int {
 	x := uint32(math.Ceil(float64(size) / fill))
