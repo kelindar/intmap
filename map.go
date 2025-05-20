@@ -3,9 +3,14 @@
 
 package intmap
 
-import "math"
+import (
+	"math"
+)
 
-const isFree = 0 // sentinel key marking an empty slot
+const (
+	isFree            = 0    // sentinel key marking an empty slot
+	defaultFillFactor = 0.80 // default fill factor
+)
 
 // Map is a contiguous hash table with interleaved key/value slots.
 type Map struct {
@@ -19,7 +24,17 @@ type Map struct {
 }
 
 // New allocates a map sized for at least `size` entries.
-func New(size int, fillFactor float64) *Map {
+func New(size int) *Map {
+	return newMap(size, defaultFillFactor)
+}
+
+// New allocates a map sized for at least `size` entries.
+func NewWithFill(size int, fillFactor float64) *Map {
+	return newMap(size, fillFactor)
+}
+
+// newMap allocates a map sized for at least `size` entries.
+func newMap(size int, fillFactor float64) *Map {
 	if fillFactor <= 0 || fillFactor >= 1 {
 		panic("intmap: fill factor must be in (0,1)")
 	}
@@ -234,7 +249,8 @@ func (m *Map) Clear() {
 
 // Clone returns a copy of the map.
 func (m *Map) Clone() *Map {
-	clone := New(len(m.data)/2, float64(m.fillFactor))
+	clone := New(len(m.data) / 2)
+	clone.fillFactor = m.fillFactor
 	clone.count = m.count
 	clone.mask = m.mask
 	clone.hasFreeKey = m.hasFreeKey
@@ -271,6 +287,29 @@ func (m *Map) rehash() {
 	// after rehash Store increments m.count, so we assert equality
 	_ = oldCount // (could sanity-check here in debug build)
 }
+
+// arraySize returns the smallest power-of-two ≥ size / fill.
+// Panics if the result would overflow int.
+/*func arraySize(size int, fill float64) int {
+	if size <= 0 {
+		panic("intmap: size must be positive")
+	}
+	if fill <= 0 || fill >= 1 {
+		panic("intmap: fill factor must be in (0,1)")
+	}
+
+	need := uint64(math.Ceil(float64(size) / fill)) // exact ceiling
+	if need < 8 {
+		return 8
+	}
+	if need > uint64(^uint(0)) { // overflow check
+		panic("intmap: requested capacity overflows int")
+	}
+	// next power-of-two: 1 << (bits.Len64(need-1))
+	capacity := uint64(1) << (64 - bits.LeadingZeros64(need-1))
+	return int(capacity)
+}
+*/
 
 // arraySize returns the next power-of-two ≥ size/fill.
 func arraySize(size int, fill float64) int {

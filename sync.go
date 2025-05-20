@@ -12,9 +12,15 @@ type Sync struct {
 
 // NewSync returns a thread-safe map initialized with n spaces and uses the stated fillFactor.
 // The map will grow as needed.
-func NewSync(size int, fillFactor float64) *Sync {
+func NewSync(size int) *Sync {
+	return NewSyncWithFill(size, defaultFillFactor)
+}
+
+// NewSyncWithFill returns a thread-safe map initialized with n spaces and uses the stated fillFactor.
+// The map will grow as needed.
+func NewSyncWithFill(size int, fillFactor float64) *Sync {
 	return &Sync{
-		data: New(size, fillFactor),
+		data: NewWithFill(size, fillFactor),
 	}
 }
 

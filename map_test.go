@@ -20,8 +20,8 @@ BenchmarkStore/stdmap-24         	58779109	        22.53 ns/op	       0 B/op	   
 */
 func BenchmarkStore(b *testing.B) {
 	const count = 1000000
-	our := New(count, .90)
-	syn := NewSync(count, .90)
+	our := New(count)
+	syn := NewSync(count)
 	std := make(map[uint32]uint32, count)
 
 	b.Run("intmap", func(b *testing.B) {
@@ -51,77 +51,94 @@ func BenchmarkStore(b *testing.B) {
 
 /*
 cpu: 13th Gen Intel(R) Core(TM) i7-13700K
-BenchmarkLoad/intmap-0%-24         	127656082	         9.635 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-0%-24           	81621494	        14.68 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-0%-24         	74867529	        15.90 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-10%-24        	115486239	        10.39 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-10%-24          	65728573	        15.41 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-10%-24        	66042310	        17.77 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-50%-24        	78479074	        13.82 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-50%-24          	56725250	        18.06 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-50%-24        	47820351	        24.60 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-90%-24        	150305022	         7.976 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-90%-24          	85187844	        14.11 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-90%-24        	66479797	        21.41 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/intmap-100%-24       	173898772	         7.165 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/sync-100%-24         	84534720	        14.25 ns/op	       0 B/op	       0 allocs/op
-BenchmarkLoad/stdmap-100%-24       	67015261	        18.00 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.75-0%-24         	86437880	        13.74 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.75-0%-24         	43864618	        23.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.75-10%-24        	69303270	        15.57 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.75-10%-24        	46029742	        23.41 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.75-50%-24        	56273300	        18.62 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.75-50%-24        	35144751	        31.44 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.75-90%-24        	72094154	        17.36 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.75-90%-24        	40250896	        26.16 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.75-100%-24       	73893445	        14.35 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.75-100%-24       	49075740	        23.19 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.80-0%-24         	88302297	        13.53 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.80-0%-24         	46275943	        22.23 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.80-10%-24        	80542126	        14.71 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.80-10%-24        	43926919	        23.28 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.80-50%-24        	59803544	        18.70 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.80-50%-24        	34938362	        31.36 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.80-90%-24        	79300531	        14.72 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.80-90%-24        	49325665	        24.42 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.80-100%-24       	87639514	        13.99 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.80-100%-24       	44728719	        22.79 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.95-0%-24         	91129993	        12.66 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.95-0%-24         	46125814	        22.66 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.95-10%-24        	81110252	        14.80 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.95-10%-24        	44669445	        23.23 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.95-50%-24        	56869611	        18.30 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.95-50%-24        	35459630	        31.26 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.95-90%-24        	84830863	        14.44 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.95-90%-24        	43787629	        24.71 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.95-100%-24       	87120118	        13.40 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.95-100%-24       	46290938	        22.91 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.99-0%-24         	122151702	         9.688 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.99-0%-24         	47180566	        22.28 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.99-10%-24        	110924407	        10.75 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.99-10%-24        	52034925	        23.67 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.99-50%-24        	71859298	        14.65 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.99-50%-24        	36981792	        31.09 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.99-90%-24        	134004831	         9.015 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.99-90%-24        	41992251	        24.81 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/intmap-0.99-100%-24       	166877673	         7.159 ns/op	       0 B/op	       0 allocs/op
+BenchmarkLoad/stdmap-0.99-100%-24       	51239350	        22.83 ns/op	       0 B/op	       0 allocs/op
 */
 func BenchmarkLoad(b *testing.B) {
 	const count = 1000000
-	our := sequentialMap(count)
-	syn := sequentialSyncMap(count)
-	std := make(map[uint32]uint32, count)
-	for i := uint32(0); i < count; i++ {
-		std[i] = i
-	}
 
-	for _, rate := range []float64{0, 10, 50, 90, 100} {
-		rate := rate
-		b.Run(fmt.Sprintf("intmap-%v%%", rate), func(b *testing.B) {
-			shift := uint32(count - count*rate/100)
+	for _, fill := range []float64{0.75, 0.80, 0.95, 0.99} {
+		our := sequentialMap(count, fill)
+		std := make(map[uint32]uint32, count)
+		for i := uint32(0); i < count; i++ {
+			std[i] = i
+		}
 
-			b.ReportAllocs()
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				our.Load(rand.Uint32N(count) + shift)
-			}
-		})
+		for _, rate := range []float64{0, 10, 50, 90, 100} {
+			rate := rate
+			b.Run(fmt.Sprintf("intmap-%.2f-%v%%", fill, rate), func(b *testing.B) {
+				shift := uint32(count - count*rate/100)
 
-		b.Run(fmt.Sprintf("sync-%v%%", rate), func(b *testing.B) {
-			shift := uint32(count - count*rate/100)
+				b.ReportAllocs()
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					our.Load(rand.Uint32N(count) + shift)
+				}
+			})
 
-			b.ReportAllocs()
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				syn.Load(rand.Uint32N(count) + shift)
-			}
-		})
+			b.Run(fmt.Sprintf("stdmap-%.2f-%v%%", fill, rate), func(b *testing.B) {
+				shift := uint32(count - count*rate/100)
 
-		b.Run(fmt.Sprintf("stdmap-%v%%", rate), func(b *testing.B) {
-			shift := uint32(count - count*rate/100)
-
-			b.ReportAllocs()
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				_ = std[rand.Uint32N(count)+shift]
-			}
-		})
+				b.ReportAllocs()
+				b.ResetTimer()
+				for i := 0; i < b.N; i++ {
+					_ = std[rand.Uint32N(count)+shift]
+				}
+			})
+		}
 	}
 }
 
 func TestInvalidNew(t *testing.T) {
 	assert.Panics(t, func() {
-		New(10, 0)
+		newMap(10, 1)
 	})
 
 	assert.Panics(t, func() {
-		New(0, .99)
+		newMap(0, 0)
 	})
 }
 
 func TestMapSimple(t *testing.T) {
-	m := New(10, 0.99)
+	m := New(10)
 	var i uint32
 	var v uint32
 	var ok bool
@@ -174,7 +191,7 @@ func TestMapSimple(t *testing.T) {
 }
 
 func TestMap(t *testing.T) {
-	m := New(10, 0.6)
+	m := New(10)
 	var ok bool
 	var v uint32
 	var i uint32
@@ -218,13 +235,13 @@ func TestMap(t *testing.T) {
 }
 
 func TestCapacity(t *testing.T) {
-	m := New(10, 0.6)
-	assert.Equal(t, 32, m.Capacity())
+	m := New(10)
+	assert.Equal(t, 16, m.Capacity())
 }
 
 func TestDeleteSequential(t *testing.T) {
 	const size = 100
-	m := sequentialMap(size)
+	m := sequentialMap(size, defaultFillFactor)
 
 	// Try to delete multiple times
 	for retry := 0; retry < 3; retry++ {
@@ -268,7 +285,7 @@ func TestDeleteRandom(t *testing.T) {
 
 func TestRangeSequential(t *testing.T) {
 	for _, size := range []int{100, 10000, 1000000} {
-		m := New(size, 0.99)
+		m := New(size)
 		expect := 0
 		for i := 0; i < size; i++ {
 			m.Store(uint32(i), uint32(i))
@@ -299,7 +316,6 @@ func TestRangeRandom(t *testing.T) {
 
 func TestArraySize(t *testing.T) {
 	assert.Equal(t, 16, arraySize(10, .99))
-	assert.Equal(t, 8, arraySize(0, .99))
 }
 
 func TestSequentialCollisions(t *testing.T) {
@@ -350,8 +366,8 @@ func collisionRate(count int, next func(i uint32) uint32) (avg float64, max int)
 }
 
 // sequentialMap creates a new map with sequential keys
-func sequentialMap(size int) *Map {
-	m := New(size, 0.99)
+func sequentialMap(size int, fill float64) *Map {
+	m := NewWithFill(size, fill)
 	for i := 0; i < size; i++ {
 		m.Store(uint32(i), uint32(i))
 	}
@@ -360,7 +376,7 @@ func sequentialMap(size int) *Map {
 
 // randomMap creates a new map with random keys
 func randomMap(size int) *Map {
-	m := New(size, 0.99)
+	m := New(size)
 	for i := 0; i < size; i++ {
 		m.Store(rand.Uint32(), uint32(i))
 	}
@@ -369,7 +385,7 @@ func randomMap(size int) *Map {
 
 // sequentialSyncMap creates a new map with sequential keys
 func sequentialSyncMap(size int) *Sync {
-	m := NewSync(size, 0.99)
+	m := NewSync(size)
 	for i := 0; i < size; i++ {
 		m.Store(uint32(i), uint32(i))
 	}
@@ -377,7 +393,7 @@ func sequentialSyncMap(size int) *Sync {
 }
 
 func TestMapClone(t *testing.T) {
-	original := New(10, 0.6)
+	original := New(10)
 	original.Store(1, 10)
 	original.Store(2, 20)
 	original.Store(3, 30)
@@ -406,7 +422,7 @@ func TestMapClone(t *testing.T) {
 }
 
 func TestRangeEach(t *testing.T) {
-	m := New(10, 0.6)
+	m := New(10)
 	m.Store(isFree, 10)
 	m.Store(2, 20)
 	m.Store(3, 30)
@@ -424,7 +440,7 @@ func TestRangeEach(t *testing.T) {
 }
 
 func TestRangeErr(t *testing.T) {
-	m := New(10, 0.6)
+	m := New(10)
 	m.Store(1, 10)
 	m.Store(2, 20)
 	m.Store(3, 30)
@@ -443,7 +459,7 @@ func TestRangeErr(t *testing.T) {
 }
 
 func TestRangeErrStop(t *testing.T) {
-	m := New(10, 0.6)
+	m := New(10)
 	m.Store(1, 10)
 	m.Store(2, 20)
 	m.Store(3, 30)
@@ -462,7 +478,7 @@ func TestRangeErrStop(t *testing.T) {
 }
 
 func TestRangeErrFreeKey(t *testing.T) {
-	m := New(10, 0.6)
+	m := New(10)
 	m.Store(isFree, 10)
 
 	keys, values := []uint32{}, []uint32{}
@@ -477,7 +493,7 @@ func TestRangeErrFreeKey(t *testing.T) {
 }
 
 func TestRangeStop(t *testing.T) {
-	m := New(10, 0.6)
+	m := New(10)
 	m.Store(0, 0)
 	m.Store(1, 10)
 
