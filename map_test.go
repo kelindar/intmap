@@ -6,7 +6,6 @@ package intmap
 import (
 	"fmt"
 	"hash/crc32"
-	"math"
 	"math/rand/v2"
 	"testing"
 
@@ -186,6 +185,8 @@ func TestMap(t *testing.T) {
 
 	for retry := 0; retry < 3; retry++ {
 		m.Clear()
+		assert.Equal(t, 0, m.Count())
+
 		m.Store(0, 12345)
 		for i = 1; i < 100000000; i += step {
 			m.Store(i, i+7)
@@ -218,6 +219,11 @@ func TestMap(t *testing.T) {
 		}
 
 	}
+}
+
+func TestCapacity(t *testing.T) {
+	m := New(10, 0.6)
+	assert.Equal(t, 32, m.Capacity())
 }
 
 func TestDeleteSequential(t *testing.T) {
@@ -295,15 +301,9 @@ func TestRangeRandom(t *testing.T) {
 	}
 }
 
-func TestCapacityFor(t *testing.T) {
-	assert.Equal(t, uint32(0x1), capacityFor(0))
-	assert.Equal(t, uint32(0xffffffff), capacityFor(math.MaxUint32))
-	assert.Equal(t, uint32(0x10), capacityFor(10))
-}
-
 func TestArraySize(t *testing.T) {
 	assert.Equal(t, 16, arraySize(10, .99))
-	assert.Equal(t, 2, arraySize(0, .99))
+	assert.Equal(t, 8, arraySize(0, .99))
 }
 
 func TestSequentialCollisions(t *testing.T) {
@@ -338,9 +338,9 @@ func TestStringCollisions(t *testing.T) {
 
 func collisionRate(count int, next func(i uint32) uint32) (avg float64, max int) {
 	counts := make(map[uint32]int, count)
-	mask := capacityFor(uint32(count)) - 1
+	mask := arraySize(count, 1) - 1
 	for i := 0; i < count; i++ {
-		offset := bucketOf(next(uint32(i)), mask)
+		offset := bucketOf(next(uint32(i)), uint32(mask))
 		counts[offset] += 1
 	}
 
@@ -408,6 +408,7 @@ func TestMapClone(t *testing.T) {
 	_, ok := original.Load(4)
 	assert.False(t, ok, "modifying clone modified the original")
 }
+
 func TestRangeEach(t *testing.T) {
 	m := New(10, 0.6)
 	m.Store(isFree, 10)

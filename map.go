@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2023, Roman Atachiants
+// Copyright (c) 2021-2024, Roman Atachiants
 // Copyright (c) 2016, Brent Pedersen - Bioinformatics
 
 package intmap
@@ -38,6 +38,11 @@ func New(size int, fillFactor float64) *Map {
 		threshold:  int32(math.Floor(float64(capacity) * fillFactor)),
 		mask:       [2]uint32{uint32(capacity - 1), uint32(2*capacity - 1)},
 	}
+}
+
+// Capacity returns the capacity of the map.
+func (m *Map) Capacity() int {
+	return len(m.data) / 2
 }
 
 // Load returns the value stored in the map for a key, or nil if no value is
@@ -287,13 +292,13 @@ func bucketOf(key, mask uint32) uint32 {
 	return (h & mask) << 1
 }
 
-func capacityFor(x uint32) uint32 {
-	if x == math.MaxUint32 {
-		return x
-	}
-
-	if x == 0 {
-		return 1
+func arraySize(size int, fill float64) int {
+	x := uint32(math.Ceil(float64(size) / fill))
+	switch {
+	case x >= math.MaxUint32:
+		return math.MaxUint32
+	case x < 8:
+		return 8
 	}
 
 	x--
@@ -302,14 +307,5 @@ func capacityFor(x uint32) uint32 {
 	x |= x >> 4
 	x |= x >> 8
 	x |= x >> 16
-	return x + 1
-}
-
-func arraySize(size int, fill float64) int {
-	s := capacityFor(uint32(math.Ceil(float64(size) / fill)))
-	if s < 2 {
-		s = 2
-	}
-
-	return int(s)
+	return int(x + 1)
 }
